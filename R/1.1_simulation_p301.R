@@ -23,8 +23,8 @@ input_rhessys$flow_file <- "ws_p301/flowtables/p301_30m.flow"
 input_rhessys$start_date <- "1941 10 1 1"
 input_rhessys$end_date <- "2021 10 1 1"
 input_rhessys$output_folder <- "ws_p301/out/1.1_p301_simulation"
-input_rhessys$output_filename <- "p301_simulation7"
-input_rhessys$command_options <- c("-b -g -c 1 189 8081 8081 -p 1 189 8081 8081 -firespread 30")
+input_rhessys$output_filename <- "p301_simulation15"
+input_rhessys$command_options <- c("-b -g -c 1 189 8081 8081 -p 1 189 8081 8081 -firespread 30 -tchange 0 0")
 
 
 # HDR (header) file
@@ -61,7 +61,7 @@ input_def_list <- list(
   list(input_hdr_list$stratum_def[2], "overstory_height_thresh", c(7)),
   list(input_hdr_list$stratum_def[2], "understory_height_thresh", c(4)),
   list(input_hdr_list$stratum_def[2], "pspread_loss_rel", c(1)),
-  list(input_hdr_list$stratum_def[2], "vapor_loss_rel", c(0.01)),
+  list(input_hdr_list$stratum_def[2], "vapor_loss_rel", c(1)),
   list(input_hdr_list$stratum_def[2], "biomass_loss_rel_k1", c(-10)),
   list(input_hdr_list$stratum_def[2], "biomass_loss_rel_k2", c(1)),
   # -----
@@ -72,7 +72,7 @@ input_def_list <- list(
   list(input_hdr_list$stratum_def[1], "overstory_height_thresh", c(7)),
   list(input_hdr_list$stratum_def[1], "understory_height_thresh", c(4)),
   list(input_hdr_list$stratum_def[1], "pspread_loss_rel", c(1)),
-  list(input_hdr_list$stratum_def[1], "vapor_loss_rel", c(0.01)),
+  list(input_hdr_list$stratum_def[1], "vapor_loss_rel", c(1)),
   list(input_hdr_list$stratum_def[1], "biomass_loss_rel_k1", c(-10)),
   list(input_hdr_list$stratum_def[1], "biomass_loss_rel_k2", c(1))
   # -----
