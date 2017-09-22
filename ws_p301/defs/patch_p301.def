@@ -26,3 +26,5 @@
 0.0700000	   clay
 0.140000	   silt
 1.000000	  gw_loss_coeff
+5 overstory_height_thresh
+3 understory_height_thresh
