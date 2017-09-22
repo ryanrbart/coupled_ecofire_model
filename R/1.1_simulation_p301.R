@@ -1,8 +1,6 @@
 # Watershed Simulation for P301
 # 
-# This script is used to simulate vegetation at patch level, beginning with no
-# vegetation. A copy of the landscape (worldfile) is exported at various time 
-# intervals for patch level fire analysis.
+#
 
 source("R/0.1_utilities.R")
 

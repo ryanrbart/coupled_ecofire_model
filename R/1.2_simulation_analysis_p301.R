@@ -5,13 +5,13 @@
 source("R/0.1_utilities.R")
 
 #theme_set(theme_bw(base_size = 11))
-#theme_set(theme_bw(base_size = 16))
+theme_set(theme_bw(base_size = 16))
 
 
 # ---------------------------------------------------------------------
 # P301 coupled model data processing
 
-run_num <- seq(14,15)
+run_num <- seq(1,15)
 
 for (hh in seq_along(run_num)){
   print(paste("Importing number",run_num[hh]))
@@ -89,10 +89,101 @@ for (ii in seq_along(run_num)){
 }
 print(shed_output)
 
+# ---------------------------------------------------------------------
+# SSCZO plots
+
+fire_size_czo <- bind_rows(Baseline = fire_size5, Warming = fire_size8, .id=c("Temperature"))
+fire_size_czo <- mutate(fire_size_czo, Date = zoo::as.yearmon(paste(year,"-", month, sep="")))
+fire_size_czo <- mutate(fire_size_czo, percent_burn = p_burned/926*100)
+
+x <- ggplot(fire_size_czo) +
+  geom_line(aes(x=Date, y=percent_burn)) +
+  labs(title = "Wildfire Time-series", y = "Percent Watershed Burned") +
+  ylim(0,100) +
+  facet_grid(Temperature~.)
+plot(x)
+ggsave("time-series.pdf",plot = x, path = "outputs/ssczo_figures")
+
+
+# --
+# Baseline vs climate: seed 107
+runs_base_clim <- bind_rows(Baseline=cd5.wy,
+                            Warming=cd8.wy,
+                            .id="Temperature")
+x <- ggplot(runs_base_clim) +
+  geom_line(aes(x=date, 
+                y=height, 
+                color=as.factor(canopy_layer), 
+                linetype=Temperature),
+            size=1) +
+  scale_color_discrete(name="Canopy", labels = c("Upper Canopy","Lower Canopy")) +
+  ylim(0,30)
+plot(x)
+ggsave("base_vs_clim_107.pdf",plot = x, path = "outputs/ssczo_figures")
+
+#--
+# Baseline vs climate: seed 110
+runs_base_clim <- bind_rows(Baseline=cd13.wy,
+                            Warming=cd12.wy,
+                            .id="Temperature")
+x <- ggplot(runs_base_clim) +
+  geom_line(aes(x=date, 
+                y=height, 
+                color=as.factor(canopy_layer), 
+                linetype=Temperature),
+            size=1) +
+  scale_color_discrete(name="Canopy", labels = c("Upper Canopy","Lower Canopy")) +
+  ylim(0,30)
+plot(x)
+ggsave("base_vs_clim_110.pdf", plot = x, path = "outputs/ssczo_figures")
+
+
+# ------------
+
+
+# Ignition effect without warming: seed 110
+runs_ign <- bind_rows(ign_0.5_month=cd14.wy,
+                      ign_1.0_month=cd13.wy,
+                      ign_2.0_month=cd15.wy,
+                      .id="Ignition_rate")
+x <- ggplot(runs_ign) +
+  geom_line(aes(x=date, 
+                y=height, 
+                color=as.factor(canopy_layer), 
+                linetype=Ignition_rate),
+            size=1) +
+  scale_color_discrete(name="Canopy", labels = c("Upper Canopy","Lower Canopy")) +
+  ylim(0,30)
+plot(x)
+ggsave("ign_rate_no_warming.pdf", plot = x, path = "outputs/ssczo_figures")
+
+
+# Ignition effect with warming: seed 110
+runs_ign <- bind_rows(ign_0.5_month=cd10.wy,
+                      ign_1.0_month=cd12.wy,
+                      ign_2.0_month=cd11.wy,
+                      .id="Ignition_rate")
+x <- ggplot(runs_ign) +
+  geom_line(aes(x=date, 
+                y=height, 
+                color=as.factor(canopy_layer), 
+                linetype=Ignition_rate),
+            size=1) +
+  scale_color_discrete(name="Canopy", labels = c("Upper Canopy","Lower Canopy")) +
+  ylim(0,30)
+plot(x)
+ggsave("ign_rate_w_warming.pdf", plot = x, path = "outputs/ssczo_figures")
+
+
+
+
+# ---------------------------------------------------------------------
+# Other plots
+
 # -----
 # Watershed-level plots
 
-fire_events <- dplyr::filter(fire_size1, p_burned > 0)
+fire_events <- dplyr::filter(fire_size14, p_burned > 0)
 
 # Histogram of fire sizes
 ggplot(fire_events, aes(p_burned)) +
@@ -102,9 +193,14 @@ ggplot(fire_events, aes(p_burned)) +
 ggplot(fire_events, aes(month)) +
   geom_histogram(binwidth=.5)
 
+# Temporal distribution of fires
+ggplot(fire_events, aes(year)) +
+  geom_histogram(binwidth=.5)
 
 # ---------------------------------------------------------------------
 # Patch-level analysis
+
+# -----
 
 # Plot height
 ggplot(cd12.wy) +
@@ -115,7 +211,7 @@ ggplot(cd12.wy) +
 ggplot(cdg8) +
   geom_line(aes(x=date, y=plantc, color=as.factor(canopy_layer))) +
   ylim(0,11000)
-  
+
 # Plot leafc
 ggplot(cdg5) +
   geom_line(aes(x=date, y=leafc, color=as.factor(canopy_layer))) +
