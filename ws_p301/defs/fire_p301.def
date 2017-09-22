@@ -18,7 +18,7 @@
 2 fire_in_buffer
 47 n_rows
 53 n_cols
-7 spread_calc_type
+9 spread_calc_type
 1.64 mean_log_wind
 0.55 sd_log_wind
 1.9 mean1_rvm
@@ -27,6 +27,6 @@
 5.1 kappa2_rvm
 0.57 p_rvm
 1.2 ign_def_mod
-2.0 mean_ign
-110 ran_seed
+1.0 mean_ign
+0 ran_seed
 1 calc_fire_effects
