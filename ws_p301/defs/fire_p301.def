@@ -26,7 +26,9 @@
 6.43 kappa1_rvm
 5.1 kappa2_rvm
 0.57 p_rvm
-1.2 ign_def_mod
+1.2 ing_def_mod
 1.0 mean_ign
 0 ran_seed
+3.0 moisture_ign_k1
+0.7 moisture_ign_k2
 1 calc_fire_effects

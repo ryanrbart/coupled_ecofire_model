@@ -11,33 +11,49 @@ theme_set(theme_bw(base_size = 16))
 # ---------------------------------------------------------------------
 # P301 coupled model data processing
 
-run_num <- seq(1,15)
+# Code for reading in broken output
+# bd <- read_table2(paste("ws_p301/out/1.1_p301_simulation/run5/p301_simulation_basin.daily", sep=""))
+# bdg <- read_table2(paste("ws_p301/out/1.1_p301_simulation/run5/p301_simulation_grow_basin.daily", sep=""))
+# cd <- read_table2(paste("ws_p301/out/1.1_p301_simulation/run7/p301_simulation_stratum.daily", sep=""))
+# cdg <- read_table2(paste("ws_p301/out/1.1_p301_simulation/run7/p301_simulation_grow_stratum.daily", sep=""))
+# plot(cd$height)
 
+
+run_num <- c(9)
+
+# Import rhessys output
 for (hh in seq_along(run_num)){
   print(paste("Importing number",run_num[hh]))
-  results_tmp <- readin_rhessys_output(paste("ws_p301/out/1.1_p301_simulation/p301_simulation",run_num[hh],sep=""), b=1, p=1, c=1, g=1)
-  assign(paste("bd",run_num[hh],sep=""), results_tmp$bd)
-  assign(paste("bdg",run_num[hh],sep=""), results_tmp$bdg)
-  assign(paste("pd",run_num[hh],sep=""), results_tmp$pd)
-  assign(paste("pdg",run_num[hh],sep=""), results_tmp$pdg)
-  assign(paste("cd",run_num[hh],sep=""), separate_canopy_output(results_tmp$cd, 2))
-  assign(paste("cdg",run_num[hh],sep=""), separate_canopy_output(results_tmp$cdg, 2))
-  assign(paste("bd",run_num[hh],".wy",sep=""), results_tmp$bd.wy)
-  assign(paste("bdg",run_num[hh],".wy",sep=""), results_tmp$bdg.wy)
-  assign(paste("pd",run_num[hh],".wy",sep=""), results_tmp$pd.wy)
-  assign(paste("pdg",run_num[hh],".wy",sep=""), results_tmp$pdg.wy)
+  results_tmp <- readin_rhessys_output(paste("ws_p301/out/1.1_p301_simulation/run",run_num[hh],"/p301_simulation", sep=""), b=1, p=1, c=1, g=1)
+  assign(paste("bd",run_num[hh],sep=""), head(results_tmp$bd,-1))
+  assign(paste("bdg",run_num[hh],sep=""), head(results_tmp$bdg,-1))
+  assign(paste("pd",run_num[hh],sep=""), head(results_tmp$pd,-1))
+  assign(paste("pdg",run_num[hh],sep=""), head(results_tmp$pdg,-1))
+  assign(paste("cd",run_num[hh],sep=""), separate_canopy_output(head(results_tmp$cd,-2), 2))
+  assign(paste("cdg",run_num[hh],sep=""), separate_canopy_output(head(results_tmp$cdg,-2), 2))
+  assign(paste("bd",run_num[hh],".wy",sep=""), head(results_tmp$bd.wy,-1))
+  assign(paste("bdg",run_num[hh],".wy",sep=""), head(results_tmp$bdg.wy,-1))
+  assign(paste("pd",run_num[hh],".wy",sep=""), head(results_tmp$pd.wy,-1))
+  assign(paste("pdg",run_num[hh],".wy",sep=""), head(results_tmp$pdg.wy,-1))
   assign(paste("cd",run_num[hh],".wy",sep=""), {
-    separate_canopy_output(results_tmp$cd, 2) %>%
-      dplyr::group_by(wy, canopy_layer) %>% 
+    separate_canopy_output(head(results_tmp$cd,-2), 2) %>%
+      dplyr::group_by(wy, canopy_layer) %>%
       summarise_all(mean)})
   assign(paste("cdg",run_num[hh],".wy",sep=""), {
-    separate_canopy_output(results_tmp$cdg, 2) %>%
-      dplyr::group_by(wy, canopy_layer) %>% 
+    separate_canopy_output(head(results_tmp$cdg,-2), 2) %>%
+      dplyr::group_by(wy, canopy_layer) %>%
       summarise_all(mean)})
+}
 
+run_num <- seq(1,9)
+# Import fire sizes 
+for (hh in seq_along(run_num)){
   assign(paste("fire_size",run_num[hh],sep=""), {
     tmp <- read.table(paste("FireSizes",run_num[hh],".txt",sep=""), header = FALSE)
     names(tmp) <- c("p_burned", "year", "month", "wind_dir", "wind_speed", "n_ignitions")
+    #tmp <- mutate(tmp, Date = zoo::as.yearmon(paste(year,"-", month, sep="")))
+    tmp <- mutate(tmp, Date = ymd(paste(year,"-", month, "-", rep(1,nrow(tmp)), sep="")))
+    tmp <- mutate(tmp, percent_burn = p_burned/926*100)
     tmp
     })
 }
@@ -46,7 +62,7 @@ beep(1)
 # ---------------------------------------------------------------------
 # Watershed-level analysis
 
-run_num <- seq(1,15)
+run_num <- seq(1,9)
 
 shed_output <- data.frame(years = double(),
                           total_fires = double(),
@@ -87,9 +103,225 @@ for (ii in seq_along(run_num)){
                  fire_return_int=fri)
   shed_output <- bind_rows(shed_output, shed_vect)
 }
+
 print(shed_output)
 
 # ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
+
+
+
+ggplot() +
+  geom_line(data=fire_size1, aes(x=Date, y=p_burned)) +
+  #xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  theme(legend.position="none")
+  
+
+
+
+
+
+
+
+
+cdg %>% 
+  dplyr::group_by()
+
+
+
+
+
+
+
+# -----
+# Watershed-level plots
+
+fire_events <- dplyr::filter(fire_size4, p_burned > 0)
+
+# Histogram of fire sizes
+ggplot(fire_events, aes(p_burned)) +
+  geom_histogram(binwidth=25)
+
+# Seasonality of fires
+ggplot(fire_events, aes(month)) +
+  geom_histogram(binwidth=.5)
+
+# Temporal distribution of fires
+ggplot(fire_events, aes(year)) +
+  geom_histogram(binwidth=.5)
+
+# ---------------------------------------------------------------------
+# Patch-level analysis
+
+
+
+# Plot height
+ggplot(bd4) +
+  geom_line(aes(x=date, y=height)) +
+  ylim(0,42)+
+  #xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  theme(legend.position="none")
+
+# Plot height
+ggplot(bdg4) +
+  geom_line(aes(x=date, y=understory_height)) +
+  ylim(0,42)+
+  #xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  theme(legend.position="none")
+
+# Plot height
+ggplot(bdg4) +
+  geom_line(aes(x=date, y=overstory_height)) +
+  ylim(0,42)+
+  #xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  theme(legend.position="none")
+
+
+# -----
+
+# Plot height
+x = ggplot(cd8) +
+  geom_line(aes(x=date, y=height, color=as.factor(canopy_layer))) +
+  ylim(0,35) +
+  labs(x="Year", y="Vegetation Height (m)") +
+  scale_color_discrete(name ="Canopy",
+                       breaks = c(1,2),
+                       labels=c("Upper", "Lower"))
+ # theme(legend.position="none")
+ggsave("sierra_timeseries.jpeg", plot = x, path = "outputs/")
+
+
+# Plot plantc (plantc includes roots. Need to exclude.)
+ggplot(cdg5) +
+  geom_line(aes(x=date, y=plantc, color=as.factor(canopy_layer))) +
+  #ylim(0,300) +
+  #xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  theme(legend.position="none")
+  #geom_vline(aes(xintercept=2275))
+
+# Plot leafc
+ggplot(cdg4) +
+  geom_line(aes(x=date, y=leafc, color=as.factor(canopy_layer))) +
+  ylim(0,3000) +
+  xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  theme(legend.position="none")
+
+# Plot live_stemc
+ggplot(cdg4.wy) +
+  geom_line(aes(x=date, y=live_stemc, color=as.factor(canopy_layer))) +
+  xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  theme(legend.position="none")
+
+# Plot dead_stemc
+ggplot(cdg4.wy) +
+  geom_line(aes(x=date, y=dead_stemc, color=as.factor(canopy_layer))) +
+  ylim(0,4000) +
+  xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  theme(legend.position="none")
+
+# Plot live_crootc
+ggplot(cdg4.wy) +
+  geom_line(aes(x=date, y=dead_crootc, color=as.factor(canopy_layer))) +
+  xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  theme(legend.position="none")
+
+
+# Plot litr1c
+ggplot(pdg4) +
+  geom_line(aes(x=date, y=litr1c)) +
+  xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  theme(legend.position="none")
+
+# Plot litr2c
+ggplot(pdg4) +
+  geom_line(aes(x=date, y=litr2c)) +
+  xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  theme(legend.position="none")
+
+# Plot litr3c
+ggplot(pdg4) +
+  geom_line(aes(x=date, y=litr3c)) +
+  xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  theme(legend.position="none")
+
+# Plot litr4c
+ggplot(pdg4) +
+  geom_line(aes(x=date, y=litr4c)) +
+  xlim(ymd("2231-1-1"),ymd("2288-1-1")) +
+  theme(legend.position="none")
+
+# Plot litrc from patch
+ggplot(pdg5) +
+  geom_line(aes(x=date, y=(litr1c+litr2c+litr3c+litr4c))) +
+  #xlim(ymd("2251-1-1"),ymd("2288-1-1")) +
+  theme(legend.position="none")
+
+max(pdg4$litr1c+pdg4$litr2c+pdg4$litr3c+pdg4$litr4c)
+
+ggplot(bdg5) +
+  geom_line(aes(x=date, y=litrc)) +
+  #ylim(0,0.9) +
+  #xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  theme(legend.position="none")
+
+ggplot(bdg4.wy) +
+  geom_line(aes(x=wy, y=litrc)) +
+  theme(legend.position="none")
+
+# ----------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ---------------------------------------------------------------------
+
+
 # SSCZO plots
 
 fire_size_czo <- bind_rows(Baseline = fire_size5, Warming = fire_size8, .id=c("Temperature"))
@@ -175,88 +407,6 @@ plot(x)
 ggsave("ign_rate_w_warming.pdf", plot = x, path = "outputs/ssczo_figures")
 
 
-
-
-# ---------------------------------------------------------------------
-# Other plots
-
-# -----
-# Watershed-level plots
-
-fire_events <- dplyr::filter(fire_size14, p_burned > 0)
-
-# Histogram of fire sizes
-ggplot(fire_events, aes(p_burned)) +
-  geom_histogram(binwidth=25)
-
-# Seasonality of fires
-ggplot(fire_events, aes(month)) +
-  geom_histogram(binwidth=.5)
-
-# Temporal distribution of fires
-ggplot(fire_events, aes(year)) +
-  geom_histogram(binwidth=.5)
-
-# ---------------------------------------------------------------------
-# Patch-level analysis
-
-# -----
-
-# Plot height
-ggplot(cd12.wy) +
-  geom_line(aes(x=date, y=height, color=as.factor(canopy_layer))) +
-  ylim(0,35)
-
-# Plot plantc (plantc includes roots. Need to exclude.)
-ggplot(cdg8) +
-  geom_line(aes(x=date, y=plantc, color=as.factor(canopy_layer))) +
-  ylim(0,11000)
-
-# Plot leafc
-ggplot(cdg5) +
-  geom_line(aes(x=date, y=leafc, color=as.factor(canopy_layer))) +
-  ylim(0,3000)
-
-# Plot live_stemc
-ggplot(cdg) +
-  geom_line(aes(x=date, y=live_stemc, color=as.factor(canopy_layer)))
-
-# Plot dead_stemc
-ggplot(cdg) +
-  geom_line(aes(x=date, y=dead_stemc, color=as.factor(canopy_layer))) +
-  ylim(0,4000)
-
-# Plot live_crootc
-ggplot(cdg) +
-  geom_line(aes(x=date, y=dead_crootc, color=as.factor(canopy_layer)))
-
-
-# Plot litrc
-ggplot(pdg) +
-  geom_line(aes(x=date, y=litr4c))
-
-ggplot(bdg11.wy) +
-  geom_line(aes(x=date, y=litrc)) +
-  ylim(0,0.9)
-
-ggplot(results$bdg.wyd) +
-  geom_line(aes(x=wyd, y=litrc))
-
-# ---------------------------------------------------------------------
-# Old
-
-
-plot(results$bd$lai)
-plot(results$bd$height)
-
-plot(results$cd$height)
-
-plot(results$pdg$litr1c)
-plot(results$pdg$litr2c)
-plot(results$pdg$litr3c)
-plot(results$pdg$litr4c)
-
-plot(results$cdg$cwdc)
 
 
 
