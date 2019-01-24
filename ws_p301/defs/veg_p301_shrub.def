@@ -75,10 +75,8 @@ waring		  epc.allocation_flag
 1.1 		epc.root_growth_direction
 4.000000 	epc.root_distrib_parm
 0.0200 	epc.branch_turnover
-5 overstory_height_thresh
-3 understory_height_thresh
-1 pspread_loss_rel
-1 vapor_loss_rel
--10 biomass_loss_rel_k1
-1 biomass_loss_rel_k2
+1 understory_mort
+1 consumption
+-10 overstory_mort_k1
+1 overstory_mort_k2
 0.01 epc.resprout_leaf_carbon  

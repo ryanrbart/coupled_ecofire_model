@@ -47,34 +47,40 @@ input_preexisting_table <- NULL
 #input_def_list <- NULL
 input_def_list <- list(
   # Patch parameters
-  list(input_hdr_list$soil_def[1], "soil_depth", c(5)),
-  # Lower canopy parameters
-  list(input_hdr_list$stratum_def[2], "epc.leaf_turnover", c(0.4)),
-  list(input_hdr_list$stratum_def[2], "epc.livewood_turnover", c(0.1)),
-  list(input_hdr_list$stratum_def[2], "epc.alloc_frootc_leafc", c(1.4)),
-  list(input_hdr_list$stratum_def[2], "epc.alloc_crootc_stemc", c(0.4)),
-  list(input_hdr_list$stratum_def[2], "epc.alloc_stemc_leafc", c(0.2)),
-  list(input_hdr_list$stratum_def[2], "epc.alloc_livewoodc_woodc", c(0.9)),
-  list(input_hdr_list$stratum_def[2], "epc.branch_turnover", c(0.02)),
-  list(input_hdr_list$stratum_def[2], "epc.height_to_stem_exp", c(0.57)),
-  list(input_hdr_list$stratum_def[2], "epc.height_to_stem_coef", c(4.0)),
-  # Upper canopy parameters
-  list(input_hdr_list$stratum_def[1], "epc.height_to_stem_exp", c(0.57)),
-  list(input_hdr_list$stratum_def[1], "epc.height_to_stem_coef", c(11.39)),
-  # -----
-  # Patch fire parameters
+  list(input_hdr_list$soil_def[1], "soil_depth", c(4.468668012)),
   list(input_hdr_list$soil_def[1], "overstory_height_thresh", c(7)),
   list(input_hdr_list$soil_def[1], "understory_height_thresh", c(4)),
-  # Lower canopy fire parameters 
-  list(input_hdr_list$stratum_def[2], "pspread_loss_rel", c(1)),
-  list(input_hdr_list$stratum_def[2], "vapor_loss_rel", c(1)),
-  list(input_hdr_list$stratum_def[2], "biomass_loss_rel_k1", c(-10)),
-  list(input_hdr_list$stratum_def[2], "biomass_loss_rel_k2", c(1)),
+  
+  # Upper canopy parameters
+  list(input_hdr_list$stratum_def[1], "epc.alloc_frootc_leafc", c(1.4)),
+  list(input_hdr_list$stratum_def[1], "epc.alloc_crootc_stemc", c(0.328926288)),
+  list(input_hdr_list$stratum_def[1], "epc.alloc_stemc_leafc", c(0.4)),
+  list(input_hdr_list$stratum_def[1], "epc.alloc_livewoodc_woodc", c(0.628006947)),
+  list(input_hdr_list$stratum_def[1], "epc.leaf_turnover", c(0.251341906)),
+  list(input_hdr_list$stratum_def[1], "epc.livewood_turnover", c(0.476537964)),
+  list(input_hdr_list$stratum_def[1], "epc.branch_turnover", c(0.002788359)),
+  list(input_hdr_list$stratum_def[1], "epc.height_to_stem_coef", c(10.77209291)),
   # Upper canopy fire parameters
   list(input_hdr_list$stratum_def[1], "pspread_loss_rel", c(1)),
   list(input_hdr_list$stratum_def[1], "vapor_loss_rel", c(1)),
   list(input_hdr_list$stratum_def[1], "biomass_loss_rel_k1", c(-10)),
   list(input_hdr_list$stratum_def[1], "biomass_loss_rel_k2", c(1)),
+  
+  # Lower canopy parameters
+  list(input_hdr_list$stratum_def[2], "epc.alloc_frootc_leafc", c(1.4)),
+  list(input_hdr_list$stratum_def[2], "epc.alloc_crootc_stemc", c(0.404030788)),
+  list(input_hdr_list$stratum_def[2], "epc.alloc_stemc_leafc", c(0.2)),
+  list(input_hdr_list$stratum_def[2], "epc.alloc_livewoodc_woodc", c(0.824053249)),
+  list(input_hdr_list$stratum_def[2], "epc.leaf_turnover", c(0.407269482)),
+  list(input_hdr_list$stratum_def[2], "epc.livewood_turnover", c(0.090120688)),
+  list(input_hdr_list$stratum_def[2], "epc.branch_turnover", c(0.019216124)),
+  list(input_hdr_list$stratum_def[2], "epc.height_to_stem_coef", c(3.161467927)),
+  # Lower canopy fire parameters 
+  list(input_hdr_list$stratum_def[2], "pspread_loss_rel", c(1)),
+  list(input_hdr_list$stratum_def[2], "vapor_loss_rel", c(1)),
+  list(input_hdr_list$stratum_def[2], "biomass_loss_rel_k1", c(-10)),
+  list(input_hdr_list$stratum_def[2], "biomass_loss_rel_k2", c(1)),
+  
   # -----
   # Fire spread parameters
   list(input_hdr_list$fire_def[1], "mean_ign", c(1)),
@@ -85,14 +91,14 @@ input_def_list <- list(
 # Standard sub-surface parameters
 # input_standard_par_list <- NULL
 input_standard_par_list <- list(
-  m = c(1.792761),
-  k = c(1.566492),
-  m_v = c(1.792761),
-  k_v = c(1.566492),
-  pa = c(7.896941),
-  po = c(1.179359),
-  gw1 = c(0.1668035),
-  gw2 = c(0.178753)
+  m = c(2),
+  k = c(2),
+  m_v = c(2),
+  k_v = c(2),
+  pa = c(1.152206001),
+  po = c(0.766755034),
+  gw1 = c(0.24280128),
+  gw2 = c(0.2)
 )
 
 
