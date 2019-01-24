@@ -52,7 +52,7 @@ input_def_list <- list(
   list(input_hdr_list$soil_def[1], "understory_height_thresh", c(4)),
   
   # Upper canopy parameters
-  list(input_hdr_list$stratum_def[1], "epc.alloc_frootc_leafc", c(1.4,2)),
+  list(input_hdr_list$stratum_def[1], "epc.alloc_frootc_leafc", c(1.4)),
   list(input_hdr_list$stratum_def[1], "epc.alloc_crootc_stemc", c(0.328926288)),
   list(input_hdr_list$stratum_def[1], "epc.alloc_stemc_leafc", c(0.4)),
   list(input_hdr_list$stratum_def[1], "epc.alloc_livewoodc_woodc", c(0.628006947)),
