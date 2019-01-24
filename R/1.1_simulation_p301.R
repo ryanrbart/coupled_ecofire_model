@@ -13,16 +13,17 @@ parameter_method <- "all_combinations"
   
 # RHESSys Inputs
 input_rhessys <- list()
-input_rhessys$rhessys_version <- "bin/rhessys5.20.1_fire_p301"
+#input_rhessys$rhessys_version <- "bin/rhessys5.20.1_fire_p301"
+input_rhessys$rhessys_version <- "bin/rhessys6.0_salsa_fire"
 input_rhessys$tec_file <- "ws_p301/tecfiles/p301_fire.tec"
 input_rhessys$world_file <- "ws_p301/worldfiles/p301_30m_2canopy_fire.world"
 input_rhessys$world_hdr_prefix <- "p301_30m_fire"
 input_rhessys$flow_file <- "ws_p301/flowtables/p301_30m.flow"
 input_rhessys$start_date <- "1941 10 1 1"
-input_rhessys$end_date <- "2441 10 1 1"
+input_rhessys$end_date <- "1943 10 1 1"
 input_rhessys$output_folder <- "ws_p301/out/1.1_p301_simulation"
 input_rhessys$output_filename <- "p301_simulation"
-input_rhessys$command_options <- c("-b -g -c 1 189 8081 8081 -p 1 189 8081 8081 -firespread 30 -tchange 0 0")
+input_rhessys$command_options <- c("-b -g -c 1 189 8081 8081 -p 1 189 8081 8081 -firespread 30")
 
 
 # HDR (header) file
@@ -141,409 +142,50 @@ input_tec_data[3,] <- data.frame(2041, 9, 30, 1, "output_current_state", strings
 
 # Data frame containing variable of interest, location/name of awk file (relative to output
 # file location), and the location/name of rhessys output file with variable of interest.
-# output_variables <- NULL
-output_variables <- data.frame(variable=character(),awk_path=character(),out_file=character(),stringsAsFactors=FALSE)
-output_variables[1,] <- data.frame("lai", "awks/output_var_bd_lai.awk","p301_simulation_basin.daily",stringsAsFactors=FALSE)
-output_variables[2,] <- data.frame("leafc", "awks/output_var_cdg_leafc.awk","p301_simulation_grow_stratum.daily",stringsAsFactors=FALSE)
-output_variables[3,] <- data.frame("stemc", "awks/output_var_cdg_stemc.awk","p301_simulation_grow_stratum.daily",stringsAsFactors=FALSE)
-output_variables[4,] <- data.frame("rootc", "awks/output_var_cdg_rootc.awk","p301_simulation_grow_stratum.daily",stringsAsFactors=FALSE)
-
-output_variables[5,] <- data.frame("litrc", "awks/output_var_bd_litrc.awk","p301_simulation_basin.daily",stringsAsFactors=FALSE)
-output_variables[6,] <- data.frame("cwdc", "awks/output_var_cdg_cwdc.awk","p301_simulation_grow_stratum.daily",stringsAsFactors=FALSE)
-output_variables[7,] <- data.frame("soil1c", "awks/output_var_pdg_soil1c.awk","p301_simulation_grow_patch.daily",stringsAsFactors=FALSE)
-
-output_variables[8,] <- data.frame("height", "awks/output_var_cd_height.awk","p301_simulation_stratum.daily",stringsAsFactors=FALSE)
-
-output_variables[9,] <- data.frame("understory_leafc", "awks/output_var_bdg_understory_leafc.awk","p301_simulation_grow_basin.daily",stringsAsFactors=FALSE)
-output_variables[10,] <- data.frame("understory_stemc", "awks/output_var_bdg_understory_stemc.awk","p301_simulation_grow_basin.daily",stringsAsFactors=FALSE)
-output_variables[11,] <- data.frame("understory_biomassc", "awks/output_var_bdg_understory_biomassc.awk","p301_simulation_grow_basin.daily",stringsAsFactors=FALSE)
-output_variables[12,] <- data.frame("understory_height", "awks/output_var_bdg_understory_height.awk","p301_simulation_grow_basin.daily",stringsAsFactors=FALSE)
-output_variables[13,] <- data.frame("overstory_leafc", "awks/output_var_bdg_overstory_leafc.awk","p301_simulation_grow_basin.daily",stringsAsFactors=FALSE)
-output_variables[14,] <- data.frame("overstory_stemc", "awks/output_var_bdg_overstory_stemc.awk","p301_simulation_grow_basin.daily",stringsAsFactors=FALSE)
-output_variables[15,] <- data.frame("overstory_biomassc", "awks/output_var_bdg_overstory_biomassc.awk","p301_simulation_grow_basin.daily",stringsAsFactors=FALSE)
-output_variables[16,] <- data.frame("overstory_height", "awks/output_var_bdg_overstory_height.awk","p301_simulation_grow_basin.daily",stringsAsFactors=FALSE)
+output_variables <- NULL
+# output_variables <- data.frame(variable=character(),awk_path=character(),out_file=character(),stringsAsFactors=FALSE)
+# output_variables[1,] <- data.frame("lai", "awks/output_var_bd_lai.awk","p301_simulation_basin.daily",stringsAsFactors=FALSE)
+# output_variables[2,] <- data.frame("leafc", "awks/output_var_cdg_leafc.awk","p301_simulation_grow_stratum.daily",stringsAsFactors=FALSE)
+# output_variables[3,] <- data.frame("stemc", "awks/output_var_cdg_stemc.awk","p301_simulation_grow_stratum.daily",stringsAsFactors=FALSE)
+# output_variables[4,] <- data.frame("rootc", "awks/output_var_cdg_rootc.awk","p301_simulation_grow_stratum.daily",stringsAsFactors=FALSE)
+# 
+# output_variables[5,] <- data.frame("litrc", "awks/output_var_bd_litrc.awk","p301_simulation_basin.daily",stringsAsFactors=FALSE)
+# output_variables[6,] <- data.frame("cwdc", "awks/output_var_cdg_cwdc.awk","p301_simulation_grow_stratum.daily",stringsAsFactors=FALSE)
+# output_variables[7,] <- data.frame("soil1c", "awks/output_var_pdg_soil1c.awk","p301_simulation_grow_patch.daily",stringsAsFactors=FALSE)
+# 
+# output_variables[8,] <- data.frame("height", "awks/output_var_cd_height.awk","p301_simulation_stratum.daily",stringsAsFactors=FALSE)
+# 
+# output_variables[9,] <- data.frame("understory_leafc", "awks/output_var_bdg_understory_leafc.awk","p301_simulation_grow_basin.daily",stringsAsFactors=FALSE)
+# output_variables[10,] <- data.frame("understory_stemc", "awks/output_var_bdg_understory_stemc.awk","p301_simulation_grow_basin.daily",stringsAsFactors=FALSE)
+# output_variables[11,] <- data.frame("understory_biomassc", "awks/output_var_bdg_understory_biomassc.awk","p301_simulation_grow_basin.daily",stringsAsFactors=FALSE)
+# output_variables[12,] <- data.frame("understory_height", "awks/output_var_bdg_understory_height.awk","p301_simulation_grow_basin.daily",stringsAsFactors=FALSE)
+# output_variables[13,] <- data.frame("overstory_leafc", "awks/output_var_bdg_overstory_leafc.awk","p301_simulation_grow_basin.daily",stringsAsFactors=FALSE)
+# output_variables[14,] <- data.frame("overstory_stemc", "awks/output_var_bdg_overstory_stemc.awk","p301_simulation_grow_basin.daily",stringsAsFactors=FALSE)
+# output_variables[15,] <- data.frame("overstory_biomassc", "awks/output_var_bdg_overstory_biomassc.awk","p301_simulation_grow_basin.daily",stringsAsFactors=FALSE)
+# output_variables[16,] <- data.frame("overstory_height", "awks/output_var_bdg_overstory_height.awk","p301_simulation_grow_basin.daily",stringsAsFactors=FALSE)
 
 
 # ---------------------------------------------------------------------
-# Run 1
+# ---------------------------------------------------------------------
+# ---------------------------------------------------------------------
 
-n_runs <- 1
-output_init <- c(1,rep(0,(n_runs-1)))
-
-input_rhessys$world_file <- "ws_p301/worldfiles/p301_30m_2canopy_fire.world.Y2041M9D30H1.state"
-input_rhessys$output_folder <- "ws_p301/out/1.1_p301_simulation/run1"
-
-# Different parameters
-input_def_list[[24]] <- list(input_hdr_list$fire_def[1], "ran_seed", c(0))
-
-# Step through parameter sets
 system.time(
-  for (aa in seq_len(n_runs)){
-    
-    run_rhessys(parameter_method = parameter_method,
-                input_rhessys = input_rhessys,
-                input_hdr_list = input_hdr_list,
-                input_preexisting_table = input_preexisting_table,
-                input_def_list = input_def_list,
-                input_standard_par_list = input_standard_par_list,
-                input_clim_base_list = input_clim_base_list,
-                input_dated_seq_list = input_dated_seq_list,
-                input_tec_data = input_tec_data,
-                output_variables = output_variables,
-                output_initiation = output_init[aa])
-    
-    print("-------")
-    print(paste("Simulation: Run #", aa, "of", n_runs))
-  }
+  
+  run_rhessys(parameter_method = parameter_method,
+              output_method="awk",
+              input_rhessys = input_rhessys,
+              input_hdr_list = input_hdr_list,
+              input_preexisting_table = input_preexisting_table,
+              input_def_list = input_def_list,
+              input_standard_par_list = input_standard_par_list,
+              input_clim_base_list = input_clim_base_list,
+              input_dated_seq_list = input_dated_seq_list,
+              input_tec_data = input_tec_data,
+              output_variables = output_variables,
+              output_initiation = 1)
 )
 
 beep(1)
 
-# ---------------------------------------------------------------------
-# Run 2
 
-n_runs <- 1
-output_init <- c(1,rep(0,(n_runs-1)))
-
-input_rhessys$world_file <- "ws_p301/worldfiles/p301_30m_2canopy_fire.world.Y2041M9D30H1.state"
-input_rhessys$output_folder <- "ws_p301/out/1.1_p301_simulation/run2"
-
-# Different parameters
-input_def_list[[1]] <- list(input_hdr_list$soil_def[1], "soil_depth", c(2))
-input_def_list[[24]] <- list(input_hdr_list$fire_def[1], "ran_seed", c(0))
-
-# Step through parameter sets
-system.time(
-  for (aa in seq_len(n_runs)){
-    
-    run_rhessys(parameter_method = parameter_method,
-                input_rhessys = input_rhessys,
-                input_hdr_list = input_hdr_list,
-                input_preexisting_table = input_preexisting_table,
-                input_def_list = input_def_list,
-                input_standard_par_list = input_standard_par_list,
-                input_clim_base_list = input_clim_base_list,
-                input_dated_seq_list = input_dated_seq_list,
-                input_tec_data = input_tec_data,
-                output_variables = output_variables,
-                output_initiation = output_init[aa])
-    
-    print("-------")
-    print(paste("Simulation: Run #", aa, "of", n_runs))
-  }
-)
-
-beep(1)
-
-# ---------------------------------------------------------------------
-# Run 3
-
-n_runs <- 1
-output_init <- c(1,rep(0,(n_runs-1)))
-
-input_rhessys$world_file <- "ws_p301/worldfiles/p301_30m_2canopy_fire.world.Y2041M9D30H1.state"
-input_rhessys$output_folder <- "ws_p301/out/1.1_p301_simulation/run3"
-
-# Different parameters
-input_def_list[[8]] <- list(input_hdr_list$stratum_def[2], "epc.branch_turnover", c(0.01))
-input_def_list[[26]] <- list(input_hdr_list$stratum_def[1], "epc.branch_turnover", c(0.003))
-input_def_list[[2]] <- list(input_hdr_list$stratum_def[2], "epc.leaf_turnover", c(0.3))
-
-# Step through parameter sets
-system.time(
-  for (aa in seq_len(n_runs)){
-    
-    run_rhessys(parameter_method = parameter_method,
-                input_rhessys = input_rhessys,
-                input_hdr_list = input_hdr_list,
-                input_preexisting_table = input_preexisting_table,
-                input_def_list = input_def_list,
-                input_standard_par_list = input_standard_par_list,
-                input_clim_base_list = input_clim_base_list,
-                input_dated_seq_list = input_dated_seq_list,
-                input_tec_data = input_tec_data,
-                output_variables = output_variables,
-                output_initiation = output_init[aa])
-    
-    print("-------")
-    print(paste("Simulation: Run #", aa, "of", n_runs))
-  }
-)
-
-beep(1)
-
-# ---------------------------------------------------------------------
-# Run 4
-
-n_runs <- 1
-output_init <- c(1,rep(0,(n_runs-1)))
-
-input_rhessys$world_file <- "ws_p301/worldfiles/p301_30m_2canopy_fire.world.Y2041M9D30H1.state"
-input_rhessys$output_folder <- "ws_p301/out/1.1_p301_simulation/run4"
-
-# Different parameters
-
-# Step through parameter sets
-system.time(
-  for (aa in seq_len(n_runs)){
-    
-    run_rhessys(parameter_method = parameter_method,
-                input_rhessys = input_rhessys,
-                input_hdr_list = input_hdr_list,
-                input_preexisting_table = input_preexisting_table,
-                input_def_list = input_def_list,
-                input_standard_par_list = input_standard_par_list,
-                input_clim_base_list = input_clim_base_list,
-                input_dated_seq_list = input_dated_seq_list,
-                input_tec_data = input_tec_data,
-                output_variables = output_variables,
-                output_initiation = output_init[aa])
-    
-    print("-------")
-    print(paste("Simulation: Run #", aa, "of", n_runs))
-  }
-)
-
-beep(1)
-
-# ---------------------------------------------------------------------
-# Run 5
-
-n_runs <- 1
-output_init <- c(1,rep(0,(n_runs-1)))
-
-input_rhessys$world_file <- "ws_p301/worldfiles/p301_30m_2canopy_fire.world.Y2041M9D30H1.state"
-input_rhessys$output_folder <- "ws_p301/out/1.1_p301_simulation/run5"
-
-# Different parameters
-input_def_list[[8]] <- list(input_hdr_list$stratum_def[2], "epc.branch_turnover", c(0.007))
-input_def_list[[26]] <- list(input_hdr_list$stratum_def[1], "epc.branch_turnover", c(0.005))
-input_def_list[[2]] <- list(input_hdr_list$stratum_def[2], "epc.leaf_turnover", c(0.2))
-input_def_list[[27]] <- list(input_hdr_list$stratum_def[1], "epc.leaf_turnover", c(0.35))
-
-# Step through parameter sets
-system.time(
-  for (aa in seq_len(n_runs)){
-    
-    run_rhessys(parameter_method = parameter_method,
-                input_rhessys = input_rhessys,
-                input_hdr_list = input_hdr_list,
-                input_preexisting_table = input_preexisting_table,
-                input_def_list = input_def_list,
-                input_standard_par_list = input_standard_par_list,
-                input_clim_base_list = input_clim_base_list,
-                input_dated_seq_list = input_dated_seq_list,
-                input_tec_data = input_tec_data,
-                output_variables = output_variables,
-                output_initiation = output_init[aa])
-    
-    print("-------")
-    print(paste("Simulation: Run #", aa, "of", n_runs))
-  }
-)
-
-beep(1)
-
-# ---------------------------------------------------------------------
-# Run 6
-
-n_runs <- 1
-output_init <- c(1,rep(0,(n_runs-1)))
-
-input_rhessys$world_file <- "ws_p301/worldfiles/p301_30m_2canopy_fire.world.Y2041M9D30H1.state"
-input_rhessys$output_folder <- "ws_p301/out/1.1_p301_simulation/run6"
-
-# Different parameters
-input_def_list[[8]] <- list(input_hdr_list$stratum_def[2], "epc.branch_turnover", c(0.01))
-input_def_list[[26]] <- list(input_hdr_list$stratum_def[1], "epc.branch_turnover", c(0.004))
-input_def_list[[2]] <- list(input_hdr_list$stratum_def[2], "epc.leaf_turnover", c(0.25))
-input_def_list[[27]] <- list(input_hdr_list$stratum_def[1], "epc.leaf_turnover", c(0.3))
-
-# Step through parameter sets
-system.time(
-  for (aa in seq_len(n_runs)){
-    
-    run_rhessys(parameter_method = parameter_method,
-                input_rhessys = input_rhessys,
-                input_hdr_list = input_hdr_list,
-                input_preexisting_table = input_preexisting_table,
-                input_def_list = input_def_list,
-                input_standard_par_list = input_standard_par_list,
-                input_clim_base_list = input_clim_base_list,
-                input_dated_seq_list = input_dated_seq_list,
-                input_tec_data = input_tec_data,
-                output_variables = output_variables,
-                output_initiation = output_init[aa])
-    
-    print("-------")
-    print(paste("Simulation: Run #", aa, "of", n_runs))
-  }
-)
-
-beep(1)
-
-# ---------------------------------------------------------------------
-# Run 7
-
-n_runs <- 1
-output_init <- c(1,rep(0,(n_runs-1)))
-
-input_rhessys$world_file <- "ws_p301/worldfiles/p301_30m_2canopy_fire.world.Y2041M9D30H1.state"
-input_rhessys$output_folder <- "ws_p301/out/1.1_p301_simulation/run7"
-
-# Different parameters
-input_def_list[[8]] <- list(input_hdr_list$stratum_def[2], "epc.branch_turnover", c(0.009))
-input_def_list[[26]] <- list(input_hdr_list$stratum_def[1], "epc.branch_turnover", c(0.0027))
-input_def_list[[2]] <- list(input_hdr_list$stratum_def[2], "epc.leaf_turnover", c(0.32))
-input_def_list[[27]] <- list(input_hdr_list$stratum_def[1], "epc.leaf_turnover", c(0.29))
-
-# Step through parameter sets
-system.time(
-  for (aa in seq_len(n_runs)){
-    
-    run_rhessys(parameter_method = parameter_method,
-                input_rhessys = input_rhessys,
-                input_hdr_list = input_hdr_list,
-                input_preexisting_table = input_preexisting_table,
-                input_def_list = input_def_list,
-                input_standard_par_list = input_standard_par_list,
-                input_clim_base_list = input_clim_base_list,
-                input_dated_seq_list = input_dated_seq_list,
-                input_tec_data = input_tec_data,
-                output_variables = output_variables,
-                output_initiation = output_init[aa])
-    
-    print("-------")
-    print(paste("Simulation: Run #", aa, "of", n_runs))
-  }
-)
-
-beep(1)
-
-# ---------------------------------------------------------------------
-# Run 8
-
-n_runs <- 1
-output_init <- c(1,rep(0,(n_runs-1)))
-
-input_rhessys$world_file <- "ws_p301/worldfiles/p301_30m_2canopy_fire.world.Y2041M9D30H1.state"
-input_rhessys$output_folder <- "ws_p301/out/1.1_p301_simulation/run8"
-
-# Different parameters
-input_def_list[[8]] <- list(input_hdr_list$stratum_def[2], "epc.branch_turnover", c(0.01))
-input_def_list[[26]] <- list(input_hdr_list$stratum_def[1], "epc.branch_turnover", c(0.0027))
-input_def_list[[2]] <- list(input_hdr_list$stratum_def[2], "epc.leaf_turnover", c(0.35))
-input_def_list[[27]] <- list(input_hdr_list$stratum_def[1], "epc.leaf_turnover", c(0.29))
-
-# Step through parameter sets
-system.time(
-  for (aa in seq_len(n_runs)){
-    
-    run_rhessys(parameter_method = parameter_method,
-                input_rhessys = input_rhessys,
-                input_hdr_list = input_hdr_list,
-                input_preexisting_table = input_preexisting_table,
-                input_def_list = input_def_list,
-                input_standard_par_list = input_standard_par_list,
-                input_clim_base_list = input_clim_base_list,
-                input_dated_seq_list = input_dated_seq_list,
-                input_tec_data = input_tec_data,
-                output_variables = output_variables,
-                output_initiation = output_init[aa])
-    
-    print("-------")
-    print(paste("Simulation: Run #", aa, "of", n_runs))
-  }
-)
-
-beep(1)
-
-# ---------------------------------------------------------------------
-# Run 9
-
-n_runs <- 1
-output_init <- c(1,rep(0,(n_runs-1)))
-
-input_rhessys$world_file <- "ws_p301/worldfiles/p301_30m_2canopy_fire.world.Y2041M9D30H1.state"
-input_rhessys$output_folder <- "ws_p301/out/1.1_p301_simulation/run9"
-
-# Different parameters
-input_def_list[[8]] <- list(input_hdr_list$stratum_def[2], "epc.branch_turnover", c(0.01))
-input_def_list[[26]] <- list(input_hdr_list$stratum_def[1], "epc.branch_turnover", c(0.0027))
-input_def_list[[2]] <- list(input_hdr_list$stratum_def[2], "epc.leaf_turnover", c(0.35))
-input_def_list[[27]] <- list(input_hdr_list$stratum_def[1], "epc.leaf_turnover", c(0.29))
-input_def_list[[1]] <- list(input_hdr_list$soil_def[1], "soil_depth", c(2))
-
-# Step through parameter sets
-system.time(
-  for (aa in seq_len(n_runs)){
-    
-    run_rhessys(parameter_method = parameter_method,
-                input_rhessys = input_rhessys,
-                input_hdr_list = input_hdr_list,
-                input_preexisting_table = input_preexisting_table,
-                input_def_list = input_def_list,
-                input_standard_par_list = input_standard_par_list,
-                input_clim_base_list = input_clim_base_list,
-                input_dated_seq_list = input_dated_seq_list,
-                input_tec_data = input_tec_data,
-                output_variables = output_variables,
-                output_initiation = output_init[aa])
-    
-    print("-------")
-    print(paste("Simulation: Run #", aa, "of", n_runs))
-  }
-)
-
-beep(1)
-
-# ---------------------------------------------------------------------
-# Run 10
-
-n_runs <- 1
-output_init <- c(1,rep(0,(n_runs-1)))
-
-input_rhessys$world_file <- "ws_p301/worldfiles/p301_30m_2canopy_fire.world.Y2041M9D30H1.state"
-input_rhessys$output_folder <- "ws_p301/out/1.1_p301_simulation/run10"
-
-# Different parameters
-input_def_list[[8]] <- list(input_hdr_list$stratum_def[2], "epc.branch_turnover", c(0.01))
-input_def_list[[26]] <- list(input_hdr_list$stratum_def[1], "epc.branch_turnover", c(0.0027))
-input_def_list[[2]] <- list(input_hdr_list$stratum_def[2], "epc.leaf_turnover", c(0.35))
-input_def_list[[27]] <- list(input_hdr_list$stratum_def[1], "epc.leaf_turnover", c(0.29))
-input_def_list[[1]] <- list(input_hdr_list$soil_def[1], "soil_depth", c(2))
-
-# Step through parameter sets
-system.time(
-  for (aa in seq_len(n_runs)){
-    
-    run_rhessys(parameter_method = parameter_method,
-                input_rhessys = input_rhessys,
-                input_hdr_list = input_hdr_list,
-                input_preexisting_table = input_preexisting_table,
-                input_def_list = input_def_list,
-                input_standard_par_list = input_standard_par_list,
-                input_clim_base_list = input_clim_base_list,
-                input_dated_seq_list = input_dated_seq_list,
-                input_tec_data = input_tec_data,
-                output_variables = output_variables,
-                output_initiation = output_init[aa])
-    
-    print("-------")
-    print(paste("Simulation: Run #", aa, "of", n_runs))
-  }
-)
-
-beep(1)
-
-# ---------------------------------------------------------------------
-
-# Todo
-# Get boost on salsa
-# Modify the paths for patchGrid and demGrid
-# Start 1000 (100 by 10) year runs
-# Splice output together (in 1.2) for continuous seq.
-# Analyze fire frequency and time-series
-
-# Repeat, possibly varying rooting depth, max conductance.
 
