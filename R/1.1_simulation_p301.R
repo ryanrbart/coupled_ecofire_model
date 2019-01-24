@@ -52,7 +52,7 @@ input_def_list <- list(
   list(input_hdr_list$soil_def[1], "understory_height_thresh", c(4)),
   
   # Upper canopy parameters
-  list(input_hdr_list$stratum_def[1], "epc.alloc_frootc_leafc", c(1.4)),
+  list(input_hdr_list$stratum_def[1], "epc.alloc_frootc_leafc", c(1.4,2)),
   list(input_hdr_list$stratum_def[1], "epc.alloc_crootc_stemc", c(0.328926288)),
   list(input_hdr_list$stratum_def[1], "epc.alloc_stemc_leafc", c(0.4)),
   list(input_hdr_list$stratum_def[1], "epc.alloc_livewoodc_woodc", c(0.628006947)),
@@ -61,10 +61,10 @@ input_def_list <- list(
   list(input_hdr_list$stratum_def[1], "epc.branch_turnover", c(0.002788359)),
   list(input_hdr_list$stratum_def[1], "epc.height_to_stem_coef", c(10.77209291)),
   # Upper canopy fire parameters
-  list(input_hdr_list$stratum_def[1], "pspread_loss_rel", c(1)),
-  list(input_hdr_list$stratum_def[1], "vapor_loss_rel", c(1)),
-  list(input_hdr_list$stratum_def[1], "biomass_loss_rel_k1", c(-10)),
-  list(input_hdr_list$stratum_def[1], "biomass_loss_rel_k2", c(1)),
+  list(input_hdr_list$stratum_def[1], "understory_mort", c(1)),
+  list(input_hdr_list$stratum_def[1], "consumption", c(1)),
+  list(input_hdr_list$stratum_def[1], "overstory_mort_k1", c(-10)),
+  list(input_hdr_list$stratum_def[1], "overstory_mort_k2", c(1)),
   
   # Lower canopy parameters
   list(input_hdr_list$stratum_def[2], "epc.alloc_frootc_leafc", c(1.4)),
@@ -76,10 +76,10 @@ input_def_list <- list(
   list(input_hdr_list$stratum_def[2], "epc.branch_turnover", c(0.019216124)),
   list(input_hdr_list$stratum_def[2], "epc.height_to_stem_coef", c(3.161467927)),
   # Lower canopy fire parameters 
-  list(input_hdr_list$stratum_def[2], "pspread_loss_rel", c(1)),
-  list(input_hdr_list$stratum_def[2], "vapor_loss_rel", c(1)),
-  list(input_hdr_list$stratum_def[2], "biomass_loss_rel_k1", c(-10)),
-  list(input_hdr_list$stratum_def[2], "biomass_loss_rel_k2", c(1)),
+  list(input_hdr_list$stratum_def[2], "understory_mort", c(1)),
+  list(input_hdr_list$stratum_def[2], "consumption", c(1)),
+  list(input_hdr_list$stratum_def[2], "overstory_mort_k1", c(-10)),
+  list(input_hdr_list$stratum_def[2], "overstory_mort_k2", c(1)),
   
   # -----
   # Fire spread parameters
