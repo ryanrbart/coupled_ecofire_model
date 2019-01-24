@@ -5,7 +5,7 @@
 source("R/0.1_utilities.R")
 
 #theme_set(theme_bw(base_size = 11))
-theme_set(theme_bw(base_size = 16))
+theme_set(theme_bw(base_size = 24))
 
 
 # ---------------------------------------------------------------------
@@ -17,9 +17,9 @@ theme_set(theme_bw(base_size = 16))
 # cd <- read_table2(paste("ws_p301/out/1.1_p301_simulation/run7/p301_simulation_stratum.daily", sep=""))
 # cdg <- read_table2(paste("ws_p301/out/1.1_p301_simulation/run7/p301_simulation_grow_stratum.daily", sep=""))
 # plot(cd$height)
+git
 
-
-run_num <- c(9)
+run_num <- c(8)
 
 # Import rhessys output
 for (hh in seq_along(run_num)){
@@ -53,7 +53,7 @@ for (hh in seq_along(run_num)){
     names(tmp) <- c("p_burned", "year", "month", "wind_dir", "wind_speed", "n_ignitions")
     #tmp <- mutate(tmp, Date = zoo::as.yearmon(paste(year,"-", month, sep="")))
     tmp <- mutate(tmp, Date = ymd(paste(year,"-", month, "-", rep(1,nrow(tmp)), sep="")))
-    tmp <- mutate(tmp, percent_burn = p_burned/926*100)
+    tmp <- mutate(tmp, percent_burn = pmin(p_burned/926*100,100))
     tmp
     })
 }
@@ -62,7 +62,8 @@ beep(1)
 # ---------------------------------------------------------------------
 # Watershed-level analysis
 
-run_num <- seq(1,9)
+#run_num <- seq(1,9)
+run_num <- 8
 
 shed_output <- data.frame(years = double(),
                           total_fires = double(),
@@ -109,91 +110,86 @@ print(shed_output)
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
 # ---------------------------------------------------------------------
-
-
-
-ggplot() +
-  geom_line(data=fire_size1, aes(x=Date, y=p_burned)) +
-  #xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
-  theme(legend.position="none")
-  
-
-
-
-
-
-
-
-
-cdg %>% 
-  dplyr::group_by()
-
-
-
-
-
-
-
-# -----
 # Watershed-level plots
 
-fire_events <- dplyr::filter(fire_size4, p_burned > 0)
+# Timeseries
+x <- ggplot() +
+  geom_line(data=fire_size8, aes(x=Date, y=percent_burn), col="chocolate4") +
+  labs(title = "", x = "Year", y="Percent Watershed Burnt") +
+  ggtitle("Wildfire Timeseries")+
+  theme(legend.position="none")
+print(x)
+ggsave("sierra_watershed_timeseries_fire_size.eps", plot = x, path = "outputs/")
 
-# Histogram of fire sizes
-ggplot(fire_events, aes(p_burned)) +
-  geom_histogram(binwidth=25)
+
+# ---
+# Remove non-fire events
+fire_events <- dplyr::filter(fire_size8, p_burned > 0)
+
+# Histogram of percent burned
+x <- ggplot(fire_events, aes(percent_burn)) +
+  geom_histogram(binwidth=2, fill="chocolate", col="chocolate4") +
+  labs(title = "Size of Wildfires", x = "Percent Watershed Burnt", y="Number of Fires")
+print(x)
+ggsave("sierra_watershed_hist_percent_burn.eps", plot = x, path = "outputs/")
+
+x_breaks <- seq(1,12)
+x_labels <- c("J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D")
 
 # Seasonality of fires
-ggplot(fire_events, aes(month)) +
-  geom_histogram(binwidth=.5)
+x <- ggplot(fire_events, aes(month)) +
+  geom_histogram(binwidth=.5, fill="chocolate", col="chocolate4") +
+  scale_x_continuous(name="Month", breaks=x_breaks, labels=x_labels) +
+  scale_fill_brewer(palette = "Dark2") +
+  labs(title = "Seasonality of Wildfires", y="Number of Fire Starts") +
+  expand_limits(x=c(1,12), y=c(0,100))
+print(x)
+ggsave("sierra_watershed_seasonality_fire_sizes.eps", plot = x, path = "outputs/")
 
-# Temporal distribution of fires
-ggplot(fire_events, aes(year)) +
-  geom_histogram(binwidth=.5)
+
 
 # ---------------------------------------------------------------------
 # Patch-level analysis
 
-
-
 # Plot height
-ggplot(bd4) +
-  geom_line(aes(x=date, y=height)) +
-  ylim(0,42)+
-  #xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
-  theme(legend.position="none")
-
-# Plot height
-ggplot(bdg4) +
-  geom_line(aes(x=date, y=understory_height)) +
-  ylim(0,42)+
-  #xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
-  theme(legend.position="none")
-
-# Plot height
-ggplot(bdg4) +
-  geom_line(aes(x=date, y=overstory_height)) +
-  ylim(0,42)+
-  #xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
-  theme(legend.position="none")
-
-
-# -----
-
-# Plot height
-x = ggplot(cd8) +
-  geom_line(aes(x=date, y=height, color=as.factor(canopy_layer))) +
+x <- ggplot(cd8) +
+  geom_line(aes(x=date, y=height, color=as.factor(canopy_layer)), size=1.4) +
   ylim(0,35) +
-  labs(x="Year", y="Vegetation Height (m)") +
-  scale_color_discrete(name ="Canopy",
-                       breaks = c(1,2),
-                       labels=c("Upper", "Lower"))
+  labs(title = "Vegetation Timeseries", x="Year", y="Vegetation Height (m)") +
+  scale_color_brewer(palette  = "Dark2", 
+                     name ="Canopy",
+                     breaks = c(1,2),
+                     labels=c("Upper", "Lower"))
  # theme(legend.position="none")
-ggsave("sierra_timeseries.jpeg", plot = x, path = "outputs/")
+print(x)
+ggsave("sierra_patch_timeseries_height.eps", plot = x, path = "outputs/")
 
+# Plot litrc from patch
+
+pdg8_dummy <- cbind(pdg8, dummy = rep(1,nrow(pdg8)))
+
+x <- ggplot(pdg8_dummy) +
+  geom_line(aes(x=date, y=(litr1c+litr2c+litr3c+litr4c), color = as.factor(dummy))) +
+  labs(title = "Litter Timeseries", x="Year", y="Litter (kg/m2)") +
+  # theme(
+  #   legend.text = element_text(color="white"),
+  #   legend.title = element_text(color="white"),
+  #   legend.key = element_rect(fill="white")) +
+  scale_color_brewer(palette = "Dark2") +
+                     # name = "Canopy",
+                     # guide = guide_legend(override.aes = list(color="white")))
+  theme(legend.position="none")
+print(x)
+ggsave("sierra_patch_timeseries_litter.eps", plot = x, path = "outputs/")
+
+
+
+
+
+# -------------------
 
 # Plot plantc (plantc includes roots. Need to exclude.)
-ggplot(cdg5) +
+ggplot(cdg8) +
   geom_line(aes(x=date, y=plantc, color=as.factor(canopy_layer))) +
   #ylim(0,300) +
   #xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
@@ -201,117 +197,75 @@ ggplot(cdg5) +
   #geom_vline(aes(xintercept=2275))
 
 # Plot leafc
-ggplot(cdg4) +
+ggplot(cdg8) +
   geom_line(aes(x=date, y=leafc, color=as.factor(canopy_layer))) +
   ylim(0,3000) +
-  xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  #xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
   theme(legend.position="none")
 
 # Plot live_stemc
-ggplot(cdg4.wy) +
+ggplot(cdg8.wy) +
   geom_line(aes(x=date, y=live_stemc, color=as.factor(canopy_layer))) +
-  xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  #xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
   theme(legend.position="none")
 
 # Plot dead_stemc
-ggplot(cdg4.wy) +
+ggplot(cdg8.wy) +
   geom_line(aes(x=date, y=dead_stemc, color=as.factor(canopy_layer))) +
-  ylim(0,4000) +
-  xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  #ylim(0,4000) +
+  #xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
   theme(legend.position="none")
 
 # Plot live_crootc
-ggplot(cdg4.wy) +
+ggplot(cdg8.wy) +
   geom_line(aes(x=date, y=dead_crootc, color=as.factor(canopy_layer))) +
-  xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  #xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
   theme(legend.position="none")
 
 
 # Plot litr1c
-ggplot(pdg4) +
+ggplot(pdg8) +
   geom_line(aes(x=date, y=litr1c)) +
-  xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  #xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
   theme(legend.position="none")
 
 # Plot litr2c
-ggplot(pdg4) +
+ggplot(pdg8) +
   geom_line(aes(x=date, y=litr2c)) +
-  xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  #xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
   theme(legend.position="none")
 
 # Plot litr3c
-ggplot(pdg4) +
+ggplot(pdg8) +
   geom_line(aes(x=date, y=litr3c)) +
-  xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
+  #xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
   theme(legend.position="none")
 
 # Plot litr4c
-ggplot(pdg4) +
+ggplot(pdg8) +
   geom_line(aes(x=date, y=litr4c)) +
-  xlim(ymd("2231-1-1"),ymd("2288-1-1")) +
+  #xlim(ymd("2231-1-1"),ymd("2288-1-1")) +
   theme(legend.position="none")
 
 # Plot litrc from patch
-ggplot(pdg5) +
+ggplot(pdg8) +
   geom_line(aes(x=date, y=(litr1c+litr2c+litr3c+litr4c))) +
   #xlim(ymd("2251-1-1"),ymd("2288-1-1")) +
   theme(legend.position="none")
 
-max(pdg4$litr1c+pdg4$litr2c+pdg4$litr3c+pdg4$litr4c)
+max(pdg8$litr1c+pdg8$litr2c+pdg8$litr3c+pdg8$litr4c)
 
-ggplot(bdg5) +
+ggplot(bdg8) +
   geom_line(aes(x=date, y=litrc)) +
   #ylim(0,0.9) +
   #xlim(ymd("2271-1-1"),ymd("2278-1-1")) +
   theme(legend.position="none")
 
-ggplot(bdg4.wy) +
+ggplot(bdg8.wy) +
   geom_line(aes(x=wy, y=litrc)) +
   theme(legend.position="none")
 
 # ----------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -331,82 +285,10 @@ fire_size_czo <- mutate(fire_size_czo, percent_burn = p_burned/926*100)
 x <- ggplot(fire_size_czo) +
   geom_line(aes(x=Date, y=percent_burn)) +
   labs(title = "Wildfire Time-series", y = "Percent Watershed Burned") +
-  ylim(0,100) +
+  #ylim(0,100) +
   facet_grid(Temperature~.)
 plot(x)
 ggsave("time-series.pdf",plot = x, path = "outputs/ssczo_figures")
-
-
-# --
-# Baseline vs climate: seed 107
-runs_base_clim <- bind_rows(Baseline=cd5.wy,
-                            Warming=cd8.wy,
-                            .id="Temperature")
-x <- ggplot(runs_base_clim) +
-  geom_line(aes(x=date, 
-                y=height, 
-                color=as.factor(canopy_layer), 
-                linetype=Temperature),
-            size=1) +
-  scale_color_discrete(name="Canopy", labels = c("Upper Canopy","Lower Canopy")) +
-  ylim(0,30)
-plot(x)
-ggsave("base_vs_clim_107.pdf",plot = x, path = "outputs/ssczo_figures")
-
-#--
-# Baseline vs climate: seed 110
-runs_base_clim <- bind_rows(Baseline=cd13.wy,
-                            Warming=cd12.wy,
-                            .id="Temperature")
-x <- ggplot(runs_base_clim) +
-  geom_line(aes(x=date, 
-                y=height, 
-                color=as.factor(canopy_layer), 
-                linetype=Temperature),
-            size=1) +
-  scale_color_discrete(name="Canopy", labels = c("Upper Canopy","Lower Canopy")) +
-  ylim(0,30)
-plot(x)
-ggsave("base_vs_clim_110.pdf", plot = x, path = "outputs/ssczo_figures")
-
-
-# ------------
-
-
-# Ignition effect without warming: seed 110
-runs_ign <- bind_rows(ign_0.5_month=cd14.wy,
-                      ign_1.0_month=cd13.wy,
-                      ign_2.0_month=cd15.wy,
-                      .id="Ignition_rate")
-x <- ggplot(runs_ign) +
-  geom_line(aes(x=date, 
-                y=height, 
-                color=as.factor(canopy_layer), 
-                linetype=Ignition_rate),
-            size=1) +
-  scale_color_discrete(name="Canopy", labels = c("Upper Canopy","Lower Canopy")) +
-  ylim(0,30)
-plot(x)
-ggsave("ign_rate_no_warming.pdf", plot = x, path = "outputs/ssczo_figures")
-
-
-# Ignition effect with warming: seed 110
-runs_ign <- bind_rows(ign_0.5_month=cd10.wy,
-                      ign_1.0_month=cd12.wy,
-                      ign_2.0_month=cd11.wy,
-                      .id="Ignition_rate")
-x <- ggplot(runs_ign) +
-  geom_line(aes(x=date, 
-                y=height, 
-                color=as.factor(canopy_layer), 
-                linetype=Ignition_rate),
-            size=1) +
-  scale_color_discrete(name="Canopy", labels = c("Upper Canopy","Lower Canopy")) +
-  ylim(0,30)
-plot(x)
-ggsave("ign_rate_w_warming.pdf", plot = x, path = "outputs/ssczo_figures")
-
-
 
 
 
